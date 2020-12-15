@@ -16,5 +16,13 @@ namespace Desafio.testes.Familia
 
             Assert.AreEqual(23, p.getIdade("2020-12-13"));
         }
+
+        [Test]
+        public void DeveCalcularIdadeErrado()
+        {
+            Pessoa p = new Pessoa("123123", "Milton Romero", "pretendente", "1996-12-30");
+
+            Assert.AreNotEqual(22, p.getIdade());
+        }
     }
 }

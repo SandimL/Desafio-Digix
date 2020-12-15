@@ -42,11 +42,27 @@ namespace Desafio.testes.Familia
         }
 
         [Test]
+        public void DeveCalcularRendaTotalErrado()
+        {
+            Model.Familia familia = gerarFamiliaTeste();
+
+            Assert.AreNotEqual(1150, familia.calculaRendaTotal());
+        }
+
+        [Test]
         public void DeveCalcularPontosPorRendaTotalCorretamente()
         {
             Model.Familia familia = gerarFamiliaTeste();
 
             Assert.AreEqual(3, familia.calculaPontosPorRendaTotal());
+        }
+
+        [Test]
+        public void DeveCalcularPontosPorRendaTotalErrado()
+        {
+            Model.Familia familia = gerarFamiliaTeste();
+
+            Assert.AreNotEqual(0, familia.calculaPontosPorRendaTotal());
         }
 
         [Test]
@@ -58,6 +74,14 @@ namespace Desafio.testes.Familia
         }
 
         [Test]
+        public void DeveCalcularPontosPorIdadeDoPretendenteErrado()
+        {
+            Model.Familia familia = gerarFamiliaTeste();
+
+            Assert.AreNotEqual(0, familia.calculaPontosPorIdadeDoPretendente());
+        }
+
+        [Test]
         public void DeveCalcularPontosPorQtdDependentesCorretamente()
         {
             Model.Familia familia = gerarFamiliaTeste();
@@ -66,13 +90,29 @@ namespace Desafio.testes.Familia
         }
 
         [Test]
-        public void DeveCalcularPontuacaoTotalCorretamente()
+        public void DeveCalcularPontosPorQtdDependentesErrado()
         {
             Model.Familia familia = gerarFamiliaTeste();
 
+            Assert.AreNotEqual(0, familia.calculaPontosPorQtdDependentes());
+        }
+
+        [Test]
+        public void DeveCalcularPontuacaoTotalCorretamente()
+        {
+            Model.Familia familia = gerarFamiliaTeste();
             familia.calculaPontuacaoTotal();
 
             Assert.AreEqual(6, familia.Pontuacao);
+        }
+
+        [Test]
+        public void DeveCalcularPontuacaoTotalErrado()
+        {
+            Model.Familia familia = gerarFamiliaTeste();
+            familia.calculaPontuacaoTotal();
+
+            Assert.AreNotEqual(0, familia.Pontuacao);
         }
     }
 }

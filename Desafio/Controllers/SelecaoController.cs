@@ -25,38 +25,65 @@ namespace Desafio.Controllers
 
         [HttpPost]
         [Route("/familia/adicionar")]
-        public dynamic Post(Familia familia)
+        [Produces("application/json")]
+        public ObjectResult AdicionarFamilia(Familia familia)
         {
             if (familia.Status == ((int)StatusFamilia.CADASTRO_VALIDO).ToString())
             {
-                //Sqlite BD = new Sqlite();
                 try
                 {
-                //    string queryInserirFamilia = string.Format(@"INSERT INTO familia(id, renda_total, status) 
-                //                    VALUES ({0}, {1}, {2}", familia.Id, familia.calculaRendaTotal(), familia.Status);
+                    FamiliaDB familiaDB = new FamiliaDB();
+                    PessoaDB pessoaDB = new PessoaDB();
+                    RendaDB rendaDB = new RendaDB();
 
-                //    foreach (Pessoa p in familia.Pessoas)
-                //    {
-                //        p.Renda = familia.Rendas.Find(x => x.PessoaId == p.Id);
+                    familiaDB.adicionarFamilia(familia);
 
-                //        string queryInserirPessoas = (@"INSERT INTO familia(id, nome, tipo, data_nascimento, renda, familia_id) 
-                //                    VALUES ("+p.Id+", "+p.Nome+", "+ p.Tipo +", "+p.DataDeNascimento+", "+p.Renda.Valor+", "+familia.Id+")");
+                    foreach (Pessoa pessoa in familia.Pessoas)
+                    {
+                        pessoaDB.adicionarPessoa(pessoa, familia.Id);
+                    }
 
-                //        BD.executeQuery(queryInserirPessoas);
-                //    }
+                    foreach (Renda renda in familia.Rendas)
+                    {
+                        rendaDB.adicionarRenda(renda);
+                    }
 
-
-                //    BD.executeQuery(queryInserirFamilia);
-                    return "por enquanto deu bom";
+                    return Ok(new { mensagem = "Familia adicionada" });
                 }
                 catch(Exception e)
                 {
-                    return e;
+                    return Problem(e.Message, null, 500, "Exceção ao adicionar familia");
                 }
             }
             else
             {
-                return "Familia não pode receber o beneficio";
+                return Problem("Familia está com um status não permitido", null, 400, "Familia não pode receber o beneficio!");
+            }
+        }
+
+
+        [HttpPost]
+        [Route("/familia/calcularPontuacao")]
+        [Produces("application/json")]
+        public ObjectResult CalcularPontuacao(Familia familia)
+        {
+            try
+            {
+                familia.calculaPontuacaoTotal();
+
+                dynamic resultadoFamilia = new
+                {
+                    pontosPorIdadePretendente = familia.calculaPontosPorIdadeDoPretendente(),
+                    pontosPorQtdDependentes = familia.calculaPontosPorQtdDependentes(),
+                    pontosPorRendaTotal = familia.calculaPontosPorRendaTotal(),
+                    pontuacaoTotal = familia.Pontuacao
+                };
+                
+                return Ok( resultadoFamilia );
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message, null, 500, "Exceção ao calcular pontuação da Familia");
             }
         }
     }

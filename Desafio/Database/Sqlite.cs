@@ -6,32 +6,22 @@ using System.Data.SQLite;
 
 namespace Desafio.Database
 {
-    public class Sqlite
+    public class Sqlite : IDataBase
     {
-        private static Sqlite _instance;
-        public SQLiteConnection Conexao;
+        public Sqlite() { }
 
-        public static Sqlite Instancia()
+        public dynamic conexao()
         {
-            if (_instance == null)
-            {
-                _instance = new Sqlite();
-            }
-            return _instance;
+            return new SQLiteConnection("Data Source=selecao.db; Version = 3;"); 
         }
 
-        public Sqlite()
+        public dynamic executarQuery(dynamic conexao, dynamic comando)
         {
-            Conexao = new SQLiteConnection("Data Source= selecao.db; Version = 3; New = True; Compress = True; ");
-        }
+            conexao.Open();
+            int result = comando.ExecuteNonQuery();
+            conexao.Close();
 
-        public void executarQuery(string query)
-        {
-            SQLiteCommand sqLiteCmd;
-            Conexao.Open();
-            sqLiteCmd = Conexao.CreateCommand();
-            sqLiteCmd.CommandText = query;
-            sqLiteCmd.ExecuteNonQuery();
+            return result;
         }
     }
 }
